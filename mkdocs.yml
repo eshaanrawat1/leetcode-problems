@@ -17,3 +17,5 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.inlinehilite
   - pymdownx.details
+
+copyright: Copyright &copy; 2026 Eshaan Rawat
