@@ -1,0 +1,19 @@
+site_name: My Docs
+site_url: https://sitename.example.com
+theme:
+  name: material
+  font: 
+    text: Inter
+    code: JetBrains Mono
+  palette:
+    scheme: slate
+    primary: dark blue
+    accent: deep purple
+
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.details
