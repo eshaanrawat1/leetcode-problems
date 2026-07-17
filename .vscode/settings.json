@@ -1,29 +1,13 @@
 {
-  "files.exclude": {
-    "**/.git": true,
-    "**/.github": false,
-    "**/site": true
-  },
-
   "editor.wordWrap": "on",
   "editor.formatOnSave": true,
-
   "[markdown]": {
     "editor.defaultFormatter": "yzhang.markdown-all-in-one",
     "editor.wordWrap": "on"
   },
-
   "[yaml]": {
     "editor.defaultFormatter": "redhat.vscode-yaml"
   },
-
-  "yaml.schemas": {
-    "https://squidfunk.github.io/mkdocs-material/schema.json": "mkdocs.yml"
-  },
-
-  "markdown.extension.toc.levels": "2..3",
-
   "python.defaultInterpreterPath": ".venv/bin/python",
-
   "files.insertFinalNewline": true
 }
