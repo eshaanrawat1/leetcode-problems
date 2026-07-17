@@ -1,2 +1,16 @@
+# essential
 .venv/
 .env
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# MkDocs generated site
+site/
+
+# OS files
+.DS_Store
+
+# Logs
+*.log
