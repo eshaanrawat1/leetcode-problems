@@ -199,7 +199,7 @@ async function main() {
                     ${problem.num}
                 </td>
                 <td>
-                    <a href="/${problem.url.replace(/\.md$/, "/")}">
+                    <a href="${problem.url.replace(/\.md$/, "/")}">
                         ${problem.title}
                     </a>
                 </td>
