@@ -8,6 +8,8 @@ async function main() {
     const filters = document.getElementById("filters");
     const table = document.getElementById("problem-table");
 
+    let sortOrder = null; // null | "asc" | "desc"
+
     // --- Render filters ---
     filters.innerHTML = `
         <div class="md-typeset">
@@ -108,6 +110,14 @@ async function main() {
             padding-top: 12px;
             padding-bottom: 12px;
         }
+        #rating-header {
+            cursor: pointer;
+            user-select: none;
+            white-space: nowrap;
+        }
+        #rating-header:hover {
+            opacity: 0.75;
+        }
     `;
     document.head.appendChild(style);
 
@@ -120,7 +130,7 @@ async function main() {
                         <th>#</th>
                         <th>Problem</th>
                         <th>Difficulty</th>
-                        <th>Rating</th>
+                        <th id="rating-header">Rating <span id="sort-arrow">↕</span></th>
                     </tr>
                 </thead>
                 <tbody id="problem-tbody"></tbody>
@@ -128,6 +138,17 @@ async function main() {
             <p id="problem-count" style="color:var(--md-default-fg-color--light); font-size:0.85rem; margin-top:8px;"></p>
         </div>
     `;
+
+    // --- Rating sort ---
+    document.getElementById("rating-header").addEventListener("click", () => {
+        if (sortOrder === null) sortOrder = "asc";
+        else if (sortOrder === "asc") sortOrder = "desc";
+        else sortOrder = null;
+
+        document.getElementById("sort-arrow").textContent =
+            sortOrder === "asc" ? "↑" : sortOrder === "desc" ? "↓" : "↕";
+        render();
+    });
 
     // --- Tag chip toggle ---
     document.getElementById("tag-chips").addEventListener("click", e => {
@@ -187,6 +208,12 @@ async function main() {
             return true;
         });
 
+        if (sortOrder === "asc") {
+            filtered.sort((a, b) => (a.rating ?? Infinity) - (b.rating ?? Infinity));
+        } else if (sortOrder === "desc") {
+            filtered.sort((a, b) => (b.rating ?? -Infinity) - (a.rating ?? -Infinity));
+        }
+
         const diffColor = d => ({
             Easy: "color:#2e7d32",
             Medium: "color:#e65100",
@@ -199,7 +226,7 @@ async function main() {
                     ${problem.num}
                 </td>
                 <td>
-                    <a href="${problem.url.replace(/\.md$/, "/")}">
+                    <a href="${encodeURI(problem.url.replace(/\.md$/, "/"))}">
                         ${problem.title}
                     </a>
                 </td>
