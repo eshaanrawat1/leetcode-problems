@@ -18,4 +18,7 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.details
 
+extra_css:
+  - https://fonts.googleapis.com/icon?family=Material+Icons
+
 copyright: Made by Eshaan Rawat

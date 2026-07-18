@@ -130,7 +130,7 @@ async function main() {
                         <th>#</th>
                         <th>Problem</th>
                         <th>Difficulty</th>
-                        <th id="rating-header">Rating <span id="sort-arrow">↕</span></th>
+                        <th id="rating-header">Rating <span id="sort-arrow"><span class="material-icons" style="font-size:1rem; vertical-align:middle;">unfold_more</span></span></th>
                     </tr>
                 </thead>
                 <tbody id="problem-tbody"></tbody>
@@ -145,8 +145,12 @@ async function main() {
         else if (sortOrder === "asc") sortOrder = "desc";
         else sortOrder = null;
 
-        document.getElementById("sort-arrow").textContent =
-            sortOrder === "asc" ? "↑" : sortOrder === "desc" ? "↓" : "↕";
+        document.getElementById("sort-arrow").innerHTML =
+            sortOrder === "asc"
+                ? '<span class="material-icons" style="font-size:1rem; vertical-align:middle;">arrow_upward</span>'
+                : sortOrder === "desc"
+                    ? '<span class="material-icons" style="font-size:1rem; vertical-align:middle;">arrow_downward</span>'
+                    : '<span class="material-icons" style="font-size:1rem; vertical-align:middle;">unfold_more</span>';
         render();
     });
 
