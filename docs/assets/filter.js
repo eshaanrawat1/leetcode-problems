@@ -13,7 +13,7 @@ async function main() {
         <div class="md-typeset">
             <h3>Filters</h3>
 
-            <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px;">
+            <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end; margin-bottom:12px;">
                 <label style="display:flex; flex-direction:column; gap:4px; font-size:0.85rem;">
                     Min Rating
                     <input id="min-rating" type="number" placeholder="e.g. 1500"
@@ -30,9 +30,13 @@ async function main() {
                                background:var(--md-default-bg-color);
                                color:var(--md-default-fg-color);">
                 </label>
+                <label style="display:flex; align-items:center; gap:6px; font-size:0.85rem; padding-bottom:2px;">
+                    <input type="checkbox" id="hide-unrated">
+                    Hide unrated
+                </label>
             </div>
 
-            <details open>
+            <details>
                 <summary style="font-weight:600; cursor:pointer; margin-bottom:10px;">Topics</summary>
 
                 <input id="tag-search" type="text" placeholder="Search topics…"
@@ -99,8 +103,31 @@ async function main() {
         #problem-table tbody tr:hover {
             background: var(--md-default-fg-color--lightest);
         }
+        #problem-table td, #problem-table th {
+            vertical-align: middle;
+            padding-top: 12px;
+            padding-bottom: 12px;
+        }
     `;
     document.head.appendChild(style);
+
+    // --- Build table shell once ---
+    table.innerHTML = `
+        <div class="md-typeset">
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Problem</th>
+                        <th>Difficulty</th>
+                        <th>Rating</th>
+                    </tr>
+                </thead>
+                <tbody id="problem-tbody"></tbody>
+            </table>
+            <p id="problem-count" style="color:var(--md-default-fg-color--light); font-size:0.85rem; margin-top:8px;"></p>
+        </div>
+    `;
 
     // --- Tag chip toggle ---
     document.getElementById("tag-chips").addEventListener("click", e => {
@@ -140,14 +167,17 @@ async function main() {
         });
     }
 
-    // --- Render table ---
+    // --- Render rows only ---
     function render() {
         const min = Number(document.getElementById("min-rating").value) || -Infinity;
         const max = Number(document.getElementById("max-rating").value) || Infinity;
+        const hideUnrated = document.getElementById("hide-unrated").checked;
         const selectedTags = [...document.querySelectorAll(".tag-chip.active")].map(c => c.dataset.tag);
 
         const filtered = problems.filter(problem => {
-            if (problem.rating != null) {
+            if (problem.rating == null) {
+                if (hideUnrated) return false;
+            } else {
                 if (problem.rating < min) return false;
                 if (problem.rating > max) return false;
             }
@@ -163,48 +193,33 @@ async function main() {
             Hard: "color:#b71c1c",
         }[d] ?? "");
 
-        table.innerHTML = `
-            <div class="md-typeset">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Problem</th>
-                            <th>Difficulty</th>
-                            <th>Rating</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${filtered.map(problem => `
-                            <tr>
-                                <td style="color:var(--md-default-fg-color--light); font-size:0.85rem;">
-                                    ${problem.num}
-                                </td>
-                                <td>
-                                    <a href="/${problem.url.replace(/\.md$/, "/")}">
-                                        ${problem.title}
-                                    </a>
-                                </td>
-                                <td style="font-weight:600; font-size:0.85rem; ${diffColor(problem.difficulty)}">
-                                    ${problem.difficulty}
-                                </td>
-                                <td style="font-size:0.85rem;">
-                                    ${problem.rating ?? "—"}
-                                </td>
-                            </tr>
-                        `).join("")}
-                    </tbody>
-                </table>
-                <p style="color:var(--md-default-fg-color--light); font-size:0.85rem; margin-top:8px;">
-                    Showing ${filtered.length} / ${problems.length} problems
-                </p>
-            </div>
-        `;
+        document.getElementById("problem-tbody").innerHTML = filtered.map(problem => `
+            <tr>
+                <td style="color:var(--md-default-fg-color--light); font-size:0.85rem;">
+                    ${problem.num}
+                </td>
+                <td>
+                    <a href="/${problem.url.replace(/\.md$/, "/")}">
+                        ${problem.title}
+                    </a>
+                </td>
+                <td style="font-weight:600; font-size:0.85rem; ${diffColor(problem.difficulty)}">
+                    ${problem.difficulty}
+                </td>
+                <td style="font-size:0.85rem;">
+                    ${problem.rating ?? "—"}
+                </td>
+            </tr>
+        `).join("");
+
+        document.getElementById("problem-count").textContent =
+            `Showing ${filtered.length} / ${problems.length} problems`;
     }
 
-    // --- Rating input listeners ---
+    // --- Listeners ---
     document.getElementById("min-rating").addEventListener("input", render);
     document.getElementById("max-rating").addEventListener("input", render);
+    document.getElementById("hide-unrated").addEventListener("change", render);
 
     render();
 }
