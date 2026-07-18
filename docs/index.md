@@ -1,7 +1,5 @@
 # LeetCode Solutions
 
-## Filters
-
 <div id="filters"></div>
 
 <div id="problem-table"></div>
